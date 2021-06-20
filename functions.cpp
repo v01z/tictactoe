@@ -318,7 +318,9 @@ void game_process(const size_t table_size, const size_t win_line_length) {
       std::cin.ignore(32767, '\n');
       std::cin.clear();
       
-      if (ask != 'y')
+      if (ask == 'y')
+      	continue;
+      else
          break;
       
    }
