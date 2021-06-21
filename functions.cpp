@@ -206,11 +206,7 @@ bool humanTurn(Area &area) {
 
 bool botTurn(Area &area) {
 
-
-   CELL cell;
-   size_t iterator{};
-
-   CELL key_cells [] = {
+   const CELL key_cells [] = {
 
          {{area.cell.dX/2},{area.cell.dY/2}},
          {{0},{0}},
@@ -219,124 +215,28 @@ bool botTurn(Area &area) {
          {{area.cell.dX - 1},{area.cell.dY - 1}},
 
    };
-   
 
-/*
-   CELL ** better_cells = (CELL**) malloc(1);
+   CELL free_key_cells[sizeof (key_cells)/sizeof(*key_cells)];
+   size_t fkc_iter = 0;
 
+   CELL cell;
 
-      if (getCellData(area.table,area.cell.dX/2, area.cell.dY/2) == EMPTY_MARK)
-         {
-         addNewGoodCell(key_cells[0], better_cells, iterator);
-         ////////o
-            std::cout << better_cells[iterator]->dX << std::endl;
-            std::cout << better_cells[iterator]->dY << std::endl;
- 
-         ////////
-         iterator++;
-         }
-      
-         std::cout << "debug iterator = " << iterator << std::endl; //1
-      if (getCellData(area.table,0,0) == EMPTY_MARK)
-         {
-         addNewGoodCell(key_cells[1], better_cells, iterator);
-
-         ////////1
-            std::cout << better_cells[iterator]->dX << std::endl;
-            std::cout << better_cells[iterator]->dY << std::endl;
- 
-         ////////
-         iterator++;
-         }
-
-         std::cout << "debug iterator = " << iterator << std::endl; //2
-      if (getCellData(area.table,0,area.cell.dY - 1) == EMPTY_MARK)
-         {
-         addNewGoodCell(key_cells[2], better_cells, iterator);
-
-         /////////2
-             std::cout << better_cells[iterator]->dX << std::endl;
-            std::cout << better_cells[iterator]->dY << std::endl;
-         
-         ////////
-         iterator++;
-         } 
-         
-         std::cout << "debug iterator = " << iterator << std::endl; //3
-      if (getCellData(area.table, area.cell.dX - 1, 0) == EMPTY_MARK)
-         {
-         addNewGoodCell(key_cells[3], better_cells, iterator);
-
-         std::cout << "Last try?" << std:: endl;
-
-         /////////3
-            std::cout << better_cells[iterator]->dX << std::endl; //error is here
-            std::cout << better_cells[iterator]->dY << std::endl;
- 
-         ///////////
-         iterator++;
-         }
-
-         std::cout << "debug iterator = " << iterator << std::endl;//4 but cant get here
-      if (getCellData(area.table, area.cell.dX - 1, area.cell.dY - 1) == EMPTY_MARK)
-         {
-         addNewGoodCell(key_cells[4], better_cells, iterator);
-         ////////////4
-            std::cout << better_cells[iterator]->dX << std::endl;
-            std::cout << better_cells[iterator]->dY << std::endl;
- 
-         std::cout << "debug iterator = " << iterator << std::endl;
-         ////////////
-//         iterator++;
-         }
-         std::cout << "we are here" << std::endl; //debug;
-         ////debug
-         for (size_t i{}; i < iterator; i++)
-            {
-            std::cout << better_cells[i]->dX << std::endl;
-            std::cout << better_cells[i]->dY << std::endl;
-            }
-         ////debug
-         */
    for (auto& x : key_cells)
       {
          if (getCellData(area.table,x) == EMPTY_MARK)
             {
-            setCellData(BOT_MARK, area.table,x);
-            return false;
+              free_key_cells[fkc_iter] = x;
+              fkc_iter++;
             }
       }
 
-/*
-   if (getCellData(area.table,area.dX/2, area.dY/2) == EMPTY_MARK)
-      {
-         setCellData(BOT_MARK, area.table, area.dX/2, area.dY/2);
-         return false;
-      }
-     
-   else if (getCellData(area.table,0,0) == EMPTY_MARK)
-      {
-         setCellData(BOT_MARK, area.table, 0,0);
-         return false;
-      }
-   else if (getCellData(area.table,0,area.dY - 1) == EMPTY_MARK)
-      {
-         setCellData(BOT_MARK, area.table, 0, area.dY - 1);
-         return false;
-      } 
-   else if (getCellData(area.table, area.dX - 1, 0) == EMPTY_MARK)
-     {
-         setCellData(BOT_MARK, area.table, area.dX - 1,0);
-         return false;
-     }
-   else if (getCellData(area.table, area.dX - 1, area.dY - 1) == EMPTY_MARK)
-    {
-         setCellData(BOT_MARK, area.table, area.dX - 1, area.dY - 1);
-         return false;
-    }
-    */
-
    
+   if (fkc_iter)
+      {
+         setCellData(BOT_MARK, area.table, free_key_cells[getRandom(fkc_iter)]);
+         return false;
+      }
+
    do {
 
      cell.dX = getRandom(area.cell.dX);
@@ -541,36 +441,3 @@ size_t getRandom (const size_t max)
 
    return dist(mt);   
    }
-
-bool addNewGoodCell(const CELL src, CELL ** better_cells, const size_t iterator)
-   {
-      std::cout << "--------func begins ----------" << std::endl;
-      bool erfolg = true;;
-
-      std::cout << "Next will issue realloc().." << std::endl;
-
-//      better_cells = (CELL**) realloc(better_cells, sizeof(CELL*) * (iterator + 1 ));
-      better_cells = (CELL**) realloc(better_cells, sizeof(*better_cells) * (iterator + 1 ));
-      if (!better_cells)
-         std::cout << "NOOOOOOOOOOOOOOOOOOOO!" << std::endl;
-
-      std::cout << "Next will issue malloc().." << std::endl;
-
-      better_cells[iterator] = (CELL *) malloc (sizeof(CELL));
-//      better_cells[iterator] = (CELL *) malloc (sizeof(*better_cells[iterator]));
-      if (!better_cells[iterator])
-         std::cout << "NOOO iterator" << std::endl;
-
-      better_cells[iterator]->dX = src.dX;
-      better_cells[iterator]->dY = src.dY;
-      std::cout << "*** data inside func: " << std::endl <<
-         better_cells[iterator]->dX << " ," << better_cells[iterator]->dY << std::endl;
-
-
-      std::cout << " bett_cells added successfully" << std::endl;
-
-      std::cout << "--------func ends----------" << std::endl;
-   //   return better_cells[current];
-   return erfolg;
-   }
-         

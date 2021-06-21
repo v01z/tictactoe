@@ -75,6 +75,5 @@ void usage(char ** argv);//It is possible to make argv as 'const',
 
 size_t getRandom (const size_t maximum);
 
-bool addNewGoodCell(const CELL from, CELL ** better_cells, const size_t iter);
 
 #endif // HEADER_HPP
