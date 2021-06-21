@@ -3,6 +3,10 @@
 A simple classic TicTacToe, a terminal-based game.
 
 
+![Снимок экрана_2021-06-21_22-51-24](https://user-images.githubusercontent.com/84637681/122819496-398ec880-d2e3-11eb-9947-688e00fe5edc.png)
+
+
+
 INSTALLATION:
 -------------------------------------------------
 
