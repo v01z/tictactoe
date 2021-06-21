@@ -221,6 +221,36 @@ bool botTurn(Area &area) {
 
    CELL cell;
 
+   /////////////////////////////////////////////////////////////////////////////////////
+
+   for (size_t x{}; x < area.cell.dX; x++)
+      {
+         CELL temp;
+         cell.dX = temp.dX = x;
+
+         for (size_t y{}; y < area.cell.dY; y++)
+            {
+               if ((y+2) >= area.cell.dY)
+                  break;
+
+               cell.dY = y;
+               temp.dY = y+2;
+
+               if ((getCellData(area.table,  cell) == HUMAN_MARK && getCellData(area.table, {{x},{y+1}}) == HUMAN_MARK) && 
+                  isCellEmpty(area,temp))
+                  {
+                     setCellData(BOT_MARK, area.table, temp);
+                     return false;
+                  }
+//               if (   cell == cell{x, y+1} && getCellData(area.table, cell) == HUMAN_MARK)
+
+
+               
+            }
+      }
+   
+   /////////////////////////////////////////////////////////////////////////////////////
+
    for (auto& x : key_cells)
       {
          if (getCellData(area.table,x) == EMPTY_MARK)
@@ -296,7 +326,7 @@ bool isDraw(const Area &area) {
 void game_process(const size_t table_size, const size_t win_line_length) {
 
    Area area;
-   char ask;
+   char answer;
    bool whose_move;
 
    std::string HUMAN_GRATS (KGRN); 
@@ -305,7 +335,7 @@ void game_process(const size_t table_size, const size_t win_line_length) {
    std::string MACHINE_GRATS (KRED); 
    MACHINE_GRATS.append("Machine has won!");
 
-   whose_move = (bool)getRandom(2); //бросаем жребий
+//   whose_move = (bool)getRandom(2); //бросаем жребий
 
    for (;;)
    {
@@ -313,6 +343,7 @@ void game_process(const size_t table_size, const size_t win_line_length) {
        initGame(area, table_size, win_line_length);
        refreshScreen(area);
 
+       whose_move = (bool)getRandom(2); //бросаем жребий
        while (true) 
        {
 
@@ -338,16 +369,20 @@ void game_process(const size_t table_size, const size_t win_line_length) {
 
 	   freeAtEnd(area);
 
-      std::cin >> ask;
 
-      ask = tolower(ask);
-      std::cin.ignore(32767, '\n');
-      std::cin.clear();
+      std::cin >> answer;
+
+      answer = tolower(answer);
       
-      if (ask == 'y')
+      if (answer == 'y')
+         {
       	continue;
+         }
       else
-         break;
+         {
+            exit (EXIT_SUCCESS);
+//         break;
+         }
       
    }
 }
