@@ -9,7 +9,7 @@ void initGame(Area &area, const size_t table_size, const size_t win_line_length)
    area.victory = win_line_length;
    area.cell.dX = area.cell.dY = table_size;
 
-   area.table = new (std::nothrow) STATE * [sizeof(STATE *)*area.cell.dY];
+   area.table = new (std::nothrow) STATE * [sizeof(STATE *)*area.cell.dX];
       if (!area.table)
          {
             std::cerr << KRED;
@@ -17,10 +17,10 @@ void initGame(Area &area, const size_t table_size, const size_t win_line_length)
             exit (EXIT_FAILURE);
          }
 
-   for (size_t y{}; y < area.cell.dY; ++y) 
+   for (size_t y{}; y < area.cell.dX; ++y) 
       {
 
-       *(area.table + y) = new (std::nothrow) STATE[sizeof(STATE)*area.cell.dX];
+       *(area.table + y) = new (std::nothrow) STATE[sizeof(STATE)*area.cell.dY];
          if (!area.table[y])
             {
                std::cerr << KRED;
@@ -39,7 +39,7 @@ void initGame(Area &area, const size_t table_size, const size_t win_line_length)
                exit(EXIT_FAILURE);
             }
 
-       for (size_t x{}; x < area.cell.dX; ++x) 
+       for (size_t x{}; x < area.cell.dY; ++x) 
           {
            setCellData(EMPTY_MARK, area.table, {{y}, {x}});
           }
@@ -49,7 +49,7 @@ void initGame(Area &area, const size_t table_size, const size_t win_line_length)
 
 void freeAtEnd(Area &area) {
 	
-   for (size_t y{}; y < area.cell.dY; ++y)
+   for (size_t y{}; y < area.cell.dX; ++y)
 		   {
 		   delete [] area.table[y];
 		   area.table[y] = nullptr;
@@ -182,11 +182,11 @@ bool humanTurn(Area &area) {
 
 	   std::cout << "Dimension ";
 	   std::cout << KMAG << "X" << KNRM << " -> ";
-	   cell.dX = getIntOnly("dimension X");
+	   cell.dY = getIntOnly("dimension X");
 
 	   std::cout << "Dimension " << KMAG;
 	   std::cout << "Y " << KNRM << "-> ";
-	   cell.dY = getIntOnly("dimension Y");
+	   cell.dX = getIntOnly("dimension Y");
 
       cell.dX--; 
 	   cell.dY--;
@@ -217,7 +217,7 @@ bool botTurn(Area &area) {
    };
 
    CELL free_key_cells[sizeof (key_cells)/sizeof(*key_cells)];
-   size_t fkc_iter = 0;
+   size_t fkc_iter {0};
 
    CELL cell;
 
@@ -230,7 +230,6 @@ bool botTurn(Area &area) {
             }
       }
 
-   
    if (fkc_iter)
       {
          setCellData(BOT_MARK, area.table, free_key_cells[getRandom(fkc_iter)]);
