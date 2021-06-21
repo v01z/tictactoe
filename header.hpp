@@ -8,12 +8,18 @@
 
 enum STATE {HUMAN_MARK='X',BOT_MARK='O', EMPTY_MARK='_'};
 
+typedef struct {
+
+   size_t dX;
+   size_t dY;
+
+} CELL;
+
 #pragma pack (push, 1)
 typedef struct {
 
    STATE** table;
-   size_t dY;
-   size_t dX;
+   CELL cell;
    size_t victory;
 
 } Area;
@@ -22,13 +28,13 @@ typedef struct {
 
 const std::string its_pitty {"Cant clear screen. But it is necessary for our game, sorry."};
 
-inline char getCellData (STATE ** const array, const size_t x, const size_t y);
+inline char getCellData (STATE ** const array, const CELL cell);
 
-inline void setCellData(STATE data, STATE ** array, const size_t x, const size_t y);
+inline void setCellData(STATE data, STATE ** array, const CELL cell);
 
-bool isValidCell(const Area &area, const size_t x, const size_t y);
+bool isValidCell(const Area &area, const CELL cell);
 
-bool isCellEmpty(const Area &area, const size_t x, const size_t y);
+bool isCellEmpty(const Area &area, const CELL cell);
 
 size_t getIntOnly(const std::string str);
 
@@ -68,5 +74,7 @@ void usage(char ** argv);//It is possible to make argv as 'const',
                          //but traditions demands not to do so.
 
 size_t getRandom (const size_t maximum);
+
+bool addNewGoodCell(const CELL from, CELL ** better_cells, const size_t iter);
 
 #endif // HEADER_HPP
