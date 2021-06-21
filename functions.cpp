@@ -414,7 +414,7 @@ inline char getCellData(STATE** const array, const CELL cell) {
    return ch;
 }
 
-inline void setCellData(STATE data, STATE** array, const CELL cell) {
+inline void setCellData(const STATE data, STATE** array, const CELL cell) {
 
 	*((*(array + cell.dX)) + cell.dY) = data;
 

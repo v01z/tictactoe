@@ -30,7 +30,7 @@ const std::string its_pitty {"Cant clear screen. But it is necessary for our gam
 
 inline char getCellData (STATE ** const array, const CELL cell);
 
-inline void setCellData(STATE data, STATE ** array, const CELL cell);
+inline void setCellData(const STATE data, STATE ** array, const CELL cell);
 
 bool isValidCell(const Area &area, const CELL cell);
 
