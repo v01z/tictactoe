@@ -237,8 +237,8 @@ bool botTurn(Area &area) {
                cell.dY = y;
                temp.dY = y+2;
 
-               if ((getCellData(area.table,  cell) == HUMAN_MARK && getCellData(area.table, {{x},{y+1}}) == HUMAN_MARK) && 
-                  isCellEmpty(area,temp))
+               if (getCellData(area.table,  cell) == HUMAN_MARK && getCellData(area.table, {{x},{y+1}}) == HUMAN_MARK)  
+                  if (isCellEmpty(area,temp))
                   {
                      setCellData(BOT_MARK, area.table, temp);
                      return false;
@@ -286,29 +286,29 @@ bool isVictory(const STATE ch, Area &area) {
    	{
        for (size_t x{}; x < area.cell.dY; x++) 
 	   {
-           if (isLineFull(ch, area, y, x, 1, 0, area.victory)) return true;
-           if (isLineFull(ch, area, y, x, 1, 1, area.victory)) return true;
-           if (isLineFull(ch, area, y, x, 0, 1, area.victory)) return true;
-           if (isLineFull(ch, area, y, x, 1, -1, area.victory)) return true;
+           if (isLineFull(ch, area, {{y}, {x}}, 1, 0, area.victory)) return true;
+           if (isLineFull(ch, area, {{y}, {x}}, 1, 1, area.victory)) return true;
+           if (isLineFull(ch, area, {{y}, {x}}, 0, 1, area.victory)) return true;
+           if (isLineFull(ch, area, {{y}, {x}}, 1, -1, area.victory)) return true;
        }
    }
    return false;
 }
 
-bool isLineFull(const STATE ch, Area &area, const size_t y, const size_t x,
+bool isLineFull(const STATE ch, Area &area, const CELL cell,
                 const size_t vx, const size_t vy, const size_t length) 
 {
 
    CELL last;
-   last.dX = x + (length - 1) * vx;
-   last.dY = y + (length - 1) * vy;
+   last.dX = cell.dX + (length - 1) * vx;
+   last.dY = cell.dY + (length - 1) * vy;
 
    if (!isValidCell(area, last))
        return false;
 
    for (size_t i{}; i < length; i++)
    		{
-          if (getCellData(area.table, {{y + i * vy}, {x + i * vx}}) != ch)
+          if (getCellData(area.table, {{cell.dY + i * vy}, {cell.dX + i * vx}}) != ch)
                return false;
 		}
 

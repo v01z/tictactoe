@@ -55,7 +55,7 @@ bool botTurn(Area &area);
 bool isVictory(const STATE ch, Area &area);
 
 
-bool isLineFull(const STATE ch, Area &area, const size_t y, const size_t x, 
+bool isLineFull(const STATE ch, Area &area, const CELL cell, 
                  const size_t vx, const size_t vy, const size_t length);
 
 
