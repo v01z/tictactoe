@@ -382,6 +382,7 @@ void game_process(const size_t table_size, const size_t win_line_length) {
          }
       else
          {
+            std::cout << "See you later!" << std::endl;
             exit (EXIT_SUCCESS);
          }
       
