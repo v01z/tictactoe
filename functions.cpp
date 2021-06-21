@@ -180,11 +180,11 @@ bool humanTurn(Area &area) {
 	   std::cout << KNRM;
 	   std::cout << ":" << std::endl;
 
-	   std::cout << "Dimension ";
+	   std::cout << "Enter ";
 	   std::cout << KMAG << "X" << KNRM << " -> ";
 	   cell.dY = getIntOnly("dimension X");
 
-	   std::cout << "Dimension " << KMAG;
+	   std::cout << "Enter " << KMAG;
 	   std::cout << "Y " << KNRM << "-> ";
 	   cell.dX = getIntOnly("dimension Y");
 
