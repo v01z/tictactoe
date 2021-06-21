@@ -30,4 +30,4 @@ For example:
 
 ./tictactoe 7 5
 
-Good luck!
+You play 'X', computer plays 'O'. Good luck!

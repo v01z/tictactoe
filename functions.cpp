@@ -223,6 +223,7 @@ bool botTurn(Area &area) {
 
    /////////////////////////////////////////////////////////////////////////////////////
 
+
    for (size_t x{}; x < area.cell.dX; x++)
       {
          CELL temp;
@@ -248,6 +249,7 @@ bool botTurn(Area &area) {
                
             }
       }
+      
    
    /////////////////////////////////////////////////////////////////////////////////////
 
@@ -381,7 +383,6 @@ void game_process(const size_t table_size, const size_t win_line_length) {
       else
          {
             exit (EXIT_SUCCESS);
-//         break;
          }
       
    }
