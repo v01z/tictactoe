@@ -388,7 +388,7 @@ void game_process(const size_t table_size, const size_t win_line_length) {
    }
 }
 
-bool isGameEndedUp(STATE mark, Area &area, const std::string congrats) 
+bool isGameEndedUp(const STATE mark, Area &area, const std::string congrats) 
 {
    if (isVictory(mark, area)) {
        std::cout << congrats << std::endl;

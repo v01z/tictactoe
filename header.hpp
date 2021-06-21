@@ -65,7 +65,7 @@ bool isDraw(const Area &area);
 void game_process(const size_t table_size, const size_t line_length);
 
 
-bool isGameEndedUp(STATE mark, Area &area, const std::string str);
+bool isGameEndedUp(const STATE mark, Area &area, const std::string str);
 
 
 void showErrMsg(const std::string str);
