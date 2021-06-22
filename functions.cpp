@@ -223,31 +223,15 @@ bool botTurn(Area &area) {
 
    /////////////////////////////////////////////////////////////////////////////////////
 
-
-   for (size_t x{}; x < area.cell.dX; x++)
+  
+   if (messUpPlans(area,true,0))
       {
-         CELL temp;
-         cell.dX = temp.dX = x;
+         return false;
+      }
 
-         for (size_t y{}; y < area.cell.dY; y++)
-            {
-               if ((y+2) >= area.cell.dY)
-                  break;
-
-               cell.dY = y;
-               temp.dY = y+2;
-
-               if (getCellData(area.table,  cell) == HUMAN_MARK && getCellData(area.table, {{x},{y+1}}) == HUMAN_MARK)  
-                  if (isCellEmpty(area,temp))
-                  {
-                     setCellData(BOT_MARK, area.table, temp);
-                     return false;
-                  }
-//               if (   cell == cell{x, y+1} && getCellData(area.table, cell) == HUMAN_MARK)
-
-
-               
-            }
+   if (messUpPlans(area,false,0))
+      {
+         return false;
       }
       
    
@@ -476,4 +460,42 @@ size_t getRandom (const size_t max)
    std::uniform_real_distribution <double> dist(0, max);
 
    return dist(mt);   
+   }
+
+bool messUpPlans(Area &area, bool is_horiz, int horiz_direct)
+   {
+
+      size_t Dx1{};
+      size_t Dy1{1};
+      size_t Dx2{};
+      size_t Dy2{2};
+
+      if (!is_horiz)
+         {
+            Dx1 = 1;
+            Dy1 = 0;
+            Dx2 = 2;
+            Dy2 = 0;
+         }
+      
+      for (size_t x{}; x < area.cell.dX; ++x)
+         {
+            for (size_t y{}; y < area.cell.dY; ++y)
+               {
+               if(getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
+                  {
+                     if (getCellData(area.table, {{x+Dx1},{y+Dy1}}) == HUMAN_MARK)
+                        {
+                           if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
+                              {
+                                 setCellData(BOT_MARK,area.table, {{x+Dx2}, {y+Dy2}});
+                                 return true;
+                              }
+                        }
+                  }
+               }
+         }
+
+      return false;
+
    }

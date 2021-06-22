@@ -76,4 +76,6 @@ void usage(char ** argv);//It is possible to make argv as 'const',
 size_t getRandom (const size_t maximum);
 
 
+bool messUpPlans(Area &area, bool horiz, int horiz_direct);
+
 #endif // HEADER_HPP
