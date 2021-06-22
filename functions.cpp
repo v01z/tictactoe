@@ -491,9 +491,9 @@ bool messUpPlans_pos(const Area &area, const bool is_horiz)
          {
             for (size_t y{}; y < area.cell.dY; ++y)
                {
-               if(getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
+               if(isValidCell(area,{{x},{y}}) && getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
                   {
-                     if (isValidCell(area,{{x+Dx1},{y+Dy1}}) &&getCellData(area.table, {{x+Dx1},{y+Dy1}}) == HUMAN_MARK)
+                     if (isValidCell(area,{{x+Dx1},{y+Dy1}}) && getCellData(area.table, {{x+Dx1},{y+Dy1}}) == HUMAN_MARK)
                         {
                            if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
                               {
@@ -524,13 +524,14 @@ bool messUpPlans_neg(const Area &area, bool const is_horiz)
             Dy2 = 0;
          }
       
-      for (size_t x{area.cell.dX - 1}; x >= 0; --x)
-         {
-            for (size_t y{area.cell.dY - 1}; y >= 0; --y)
+      for (int x{(int)area.cell.dX - 1}; x >= 0; --x) //Swtiched to 'int' cause if 'size_tl is less than zero then
+         {                                       //segmentation fault is обеспечен.
+            for (int y{(int)area.cell.dY - 1}; y >= 0; --y)
                {
-               if(getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
+               if(isValidCell(area,{{(size_t)0+ x},{(size_t)0 + y}}) && 
+                  getCellData(area.table, {{(size_t)0 + x}, {(size_t)0 + y}}) == HUMAN_MARK) 
                   {
-                     if (isValidCell(area,{{x-Dx1},{y-Dy1}}) &&getCellData(area.table, {{x-Dx1},{y-Dy1}}) == HUMAN_MARK)
+                     if (isValidCell(area,{{x-Dx1},{y-Dy1}}) && getCellData(area.table, {{x-Dx1},{y-Dy1}}) == HUMAN_MARK)
                         {
                            if (isValidCell(area,{{x-Dx2},{y-Dy2}}) && getCellData(area.table,{{x-Dx2},{y-Dy2}}) == EMPTY_MARK)
                               {
