@@ -224,17 +224,26 @@ bool botTurn(Area &area) {
    /////////////////////////////////////////////////////////////////////////////////////
 
   
-   if (messUpPlans(area,true,0))
+   if (messUpPlans_pos(area,true))
       {
          return false;
       }
 
-   if (messUpPlans(area,false,0))
+   if (messUpPlans_pos(area,false))
       {
          return false;
       }
       
-   
+    if (messUpPlans_neg(area,true))
+      {
+         return false;
+      }
+
+   if (messUpPlans_neg(area,false))
+      {
+         return false;
+      }
+  
    /////////////////////////////////////////////////////////////////////////////////////
 
    for (auto& x : key_cells)
@@ -462,7 +471,7 @@ size_t getRandom (const size_t max)
    return dist(mt);   
    }
 
-bool messUpPlans(Area &area, bool is_horiz, int horiz_direct)
+bool messUpPlans_pos(const Area &area, const bool is_horiz)
    {
 
       size_t Dx1{};
@@ -489,6 +498,43 @@ bool messUpPlans(Area &area, bool is_horiz, int horiz_direct)
                            if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
                               {
                                  setCellData(BOT_MARK,area.table, {{x+Dx2}, {y+Dy2}});
+                                 return true;
+                              }
+                        }
+                  }
+               }
+         }
+
+      return false;
+
+   }
+bool messUpPlans_neg(const Area &area, bool const is_horiz)
+   {
+
+      size_t Dx1{};
+      size_t Dy1{1};
+      size_t Dx2{};
+      size_t Dy2{2};
+
+      if (!is_horiz)
+         {
+            Dx1 = 1;
+            Dy1 = 0;
+            Dx2 = 2;
+            Dy2 = 0;
+         }
+      
+      for (size_t x{area.cell.dX - 1}; x >= 0; --x)
+         {
+            for (size_t y{area.cell.dY - 1}; y >= 0; --y)
+               {
+               if(getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
+                  {
+                     if (isValidCell(area,{{x-Dx1},{y-Dy1}}) &&getCellData(area.table, {{x-Dx1},{y-Dy1}}) == HUMAN_MARK)
+                        {
+                           if (isValidCell(area,{{x-Dx2},{y-Dy2}}) && getCellData(area.table,{{x-Dx2},{y-Dy2}}) == EMPTY_MARK)
+                              {
+                                 setCellData(BOT_MARK,area.table, {{x-Dx2}, {y-Dy2}});
                                  return true;
                               }
                         }
