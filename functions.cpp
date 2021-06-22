@@ -484,7 +484,7 @@ bool messUpPlans(Area &area, bool is_horiz, int horiz_direct)
                {
                if(getCellData(area.table, {{x}, {y}}) == HUMAN_MARK) 
                   {
-                     if (getCellData(area.table, {{x+Dx1},{y+Dy1}}) == HUMAN_MARK)
+                     if (isValidCell(area,{{x+Dx1},{y+Dy1}}) &&getCellData(area.table, {{x+Dx1},{y+Dy1}}) == HUMAN_MARK)
                         {
                            if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
                               {
