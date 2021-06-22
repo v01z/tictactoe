@@ -261,11 +261,11 @@ bool botTurn(Area &area) {
          return false;
       }
 
-/*
    if (messUpPlans_pos(area,false, HUMAN_MARK, false))
       {
          return false;
       }
+      
       
     if (messUpPlans_neg(area,true, HUMAN_MARK, false))
       {
@@ -277,6 +277,7 @@ bool botTurn(Area &area) {
          return false;
       }
 
+/*
 //need check and fix
    if (messUpPlans_pos_diag(area,true, HUMAN_MARK, false))
       {
@@ -537,22 +538,28 @@ size_t getRandom (const size_t max)
    return dist(mt);   
    }
 
-bool messUpPlans_pos(const Area &area, const bool is_horiz, 
+bool messUpPlans_pos(const Area &area, const bool is_vert, 
    const STATE state, const bool force)
    {
 
+/*
       size_t Dx1{};
       size_t Dy1{1};
       size_t Dx2{};
       size_t Dy2{2};
+      */
 
+      size_t Dx1{1};
+      size_t Dy1{0};
+      size_t Dx2{2};
+      size_t Dy2{0};
 
-      if (!is_horiz)
+      if (!is_vert)
          {
-            Dx1 = 1;
-            Dy1 = 0;
-            Dx2 = 2;
-            Dy2 = 0;
+            Dx1 = 0;
+            Dy1 = 1;
+            Dx2 = 0;
+            Dy2 = 2;
          }
       
       for (size_t x{}; x < area.cell.dX; ++x)
@@ -565,8 +572,9 @@ bool messUpPlans_pos(const Area &area, const bool is_horiz,
                      std::cout << "it is valid cell! and human has a mark in here" << std::endl;
                      std::cout << "x = " << x << " , y = " << y << std::endl;
   //                   system ("sleep 5");
-//                     if (isValidCell(area,{{x+Dx1},{y+Dy1}}))
-                     if (isValidCell(area,{{0},{1}}))
+                     if (isValidCell(area,{{x+Dx1},{y+Dy1}}))
+//                     if (isValidCell(area,{{0},{1}}))
+//                     if (isValidCell(area,{{1},{0}}))
                         {
 
                         std::cout << "Next is valid cell too!" << std::endl;
@@ -579,22 +587,23 @@ bool messUpPlans_pos(const Area &area, const bool is_horiz,
                                  return true;
                               }
                               */
-//                           if (getCellData(area.table, {{x+Dx1},{y+Dy1}}) == state)
-                           if (getCellData(area.table, {{1},{0}}) == state)
+                           if (getCellData(area.table, {{x+Dx1},{y+Dy1}}) == state)
+//                           if (getCellData(area.table, {{1},{0}}) == state)
                            {
                               std::cout << "And human has a mark in here!" << std::endl;
                               std::cout << "x = " << x << " , y = " << y << std::endl;
                               std::cout << "----------------------" << std::endl;
 //                              system("sleep 10");//jumps to up here ... hm
-                              //if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
-                              if (isValidCell(area,{{0},{2}}) && getCellData(area.table,{{2},{0}}) == EMPTY_MARK)
+                              if (isValidCell(area,{{x+Dx2},{y+Dy2}}) && getCellData(area.table,{{x+Dx2},{y+Dy2}}) == EMPTY_MARK)
+//                              if (isValidCell(area,{{0},{2}}) && getCellData(area.table,{{2},{0}}) == EMPTY_MARK)
+//                              if (isValidCell(area,{{2},{0}}) && getCellData(area.table,{{2},{0}}) == EMPTY_MARK)
                                  {
                                     std::cout << "x+Dx2 = " << x+Dx2 << std::endl;
                                     std::cout << "y+Dy2 = " << y+Dy2 << std::endl;
                                     std::cout << "And I will set a mark in here!" << std::endl;
-                                    system("sleep 10");
-//                                    setCellData(BOT_MARK,area.table, {{x+Dx2}, {y+Dy2}});
-                                    setCellData(BOT_MARK,area.table, {{2}, {0}});
+//                                    system("sleep 10");
+                                    setCellData(BOT_MARK,area.table, {{x+Dx2}, {y+Dy2}});
+//                                    setCellData(BOT_MARK,area.table, {{2}, {0}});
                                     return true;
                                  }
                            }
@@ -608,21 +617,21 @@ bool messUpPlans_pos(const Area &area, const bool is_horiz,
 
    }
 
-bool messUpPlans_neg(const Area &area, bool const is_horiz, 
+bool messUpPlans_neg(const Area &area, bool const is_vert, 
    const STATE state, const bool force)
    {
 
-      size_t Dx1{};
-      size_t Dy1{1};
-      size_t Dx2{};
-      size_t Dy2{2};
+      size_t Dx1{1};
+      size_t Dy1{0};
+      size_t Dx2{2};
+      size_t Dy2{0};
 
-      if (!is_horiz)
+      if (!is_vert)
          {
-            Dx1 = 1;
-            Dy1 = 0;
-            Dx2 = 2;
-            Dy2 = 0;
+            Dx1 = 0;
+            Dy1 = 1;
+            Dx2 = 0;
+            Dy2 = 2;
          }
       
       for (int x{(int)area.cell.dX - 1}; x >= 0; --x) //Swtiched to 'int' cause if 'size_tl is less than zero then
@@ -632,7 +641,8 @@ bool messUpPlans_neg(const Area &area, bool const is_horiz,
                if(isValidCell(area,{{(size_t)0+ x},{(size_t)0 + y}}) && 
                   getCellData(area.table, {{(size_t)0 + x}, {(size_t)0 + y}}) == state) 
                   {
-                     if (isValidCell(area,{{x-Dx1},{y-Dy1}}))
+//                     if (isValidCell(area,{{x-Dx1},{y-Dy1}}))
+                     if (isValidCell(area,{5,6}))
                         {
                               /*
                            if (state == BOT_MARK && force)
@@ -641,11 +651,14 @@ bool messUpPlans_neg(const Area &area, bool const is_horiz,
                                  return true;
                               }
                               */
-                           if (getCellData(area.table, {{x-Dx1},{y-Dy1}}) == state)
+//                           if (getCellData(area.table, {{x-Dx1},{y-Dy1}}) == state)
+                           if (getCellData(area.table, {{5},{6}}) == state)
                               {
-                              if (isValidCell(area,{{x-Dx2},{y-Dy2}}) && getCellData(area.table,{{x-Dx2},{y-Dy2}}) == state)
+//                              if (isValidCell(area,{{x-Dx2},{y-Dy2}}) && getCellData(area.table,{{x-Dx2},{y-Dy2}}) == state)
+                              if (isValidCell(area,{{4},{6}}) && getCellData(area.table,{{4},{6}}) == state)
                                  {
-                                    setCellData(BOT_MARK,area.table, {{x-Dx2}, {y-Dy2}});
+//                                    setCellData(BOT_MARK,area.table, {{x-Dx2}, {y-Dy2}});
+                                    setCellData(BOT_MARK,area.table, {{4}, {6}});
                                     return true;
                                  }
                               }
