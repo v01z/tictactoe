@@ -220,12 +220,12 @@ bool botTurn(Area &area) {
 
    CELL cell;
 
-   /////////////////////////////////////////////////////////////////////////////////////
+   /////////// The very high artificial intelligence xD ///////////////
+   ////Begin
 
 //In case two marks have been settled by Bot, it will 
 //set another one:
 //--------------------------------------------------
-/*
    if (messUpPlans_pos(area,true, BOT_MARK, false))
       {
          return false;
@@ -245,21 +245,29 @@ bool botTurn(Area &area) {
       {
          return false;
       }
-*/
-//need check and fix
-   if (messUpPlans_pos_diag(area,true, BOT_MARK, false))
+   if (messUpPlans_pos_diag(area, BOT_MARK, false))
       {
          return false;
       }
 
- if (messUpPlans_neg_diag(area,true, BOT_MARK, false))
+   if (messUpPlans_neg_diag(area, BOT_MARK, false))
       {
          return false;
       }
+   
+   if (messUpPlans_pos_diag_anti(area, BOT_MARK, false))
+      {
+         return false;
+      }
+
+   if (messUpPlans_neg_diag_anti(area, BOT_MARK, false))
+      {
+         return false;
+      }
+
  // Lets check wether Human has alredy got 2 marks.
  // If so then the Bot has to mess up him:
  //--------------------- 
- /*
    if (messUpPlans_pos(area,true, HUMAN_MARK, false))
       {
          return false;
@@ -280,23 +288,31 @@ bool botTurn(Area &area) {
       {
          return false;
       }
-      */
 
-//need check and fix
-   if (messUpPlans_pos_diag(area,true, HUMAN_MARK, false))
+   if (messUpPlans_pos_diag(area, HUMAN_MARK, false))
       {
          return false;
       }
 
-   if (messUpPlans_neg_diag(area,true, HUMAN_MARK, false))
+   if (messUpPlans_neg_diag(area, HUMAN_MARK, false))
       {
          return false;
       }
+   
+    if (messUpPlans_pos_diag_anti(area, HUMAN_MARK, false))
+      {
+         return false;
+      }
+
+   if (messUpPlans_neg_diag_anti(area, HUMAN_MARK, false))
+      {
+         return false;
+      }
+
    //If everything is OK (there are no bot-lines with two marks and
    //Human has not lines with two makrs too) the Bot will append one 
    //mark to to any other one: force = true.
    //--------------------------------------------------
-   /*
     if (messUpPlans_pos(area,true, BOT_MARK, true))
       {
          return false;
@@ -313,18 +329,28 @@ bool botTurn(Area &area) {
       {
          return false;
       }
-      */
 
-   if (messUpPlans_pos_diag(area,true, BOT_MARK, true))
+   if (messUpPlans_pos_diag(area, BOT_MARK, true))
       {
          return false;
       }
 
-   if (messUpPlans_neg_diag(area,true, BOT_MARK, true))
+   if (messUpPlans_neg_diag(area, BOT_MARK, true))
       {
          return false;
       }
-   /////////////////////////////////////////////////////////////////////////////////////
+   if (messUpPlans_pos_diag(area, BOT_MARK, true))
+      {
+         return false;
+      }
+
+   if (messUpPlans_neg_diag(area, BOT_MARK, true))
+      {
+         return false;
+      }
+
+   //////////////////////////////////////////////////
+   ////////////End
 
    for (auto& x : key_cells)
       {
@@ -647,22 +673,26 @@ bool messUpPlans_neg(const Area &area, bool const is_vert,
 
    }
 
-//need check and fix
-bool messUpPlans_pos_diag(const Area &area, const bool from_0_0, 
-   const STATE state, const bool force)
+bool messUpPlans_pos_diag(const Area &area, const STATE state, const bool force)
    {
 
-/*
+      size_t Dx1{0};
+      size_t Dy1{0};
+      size_t Dx2{area.cell.dX};
+      size_t Dy2{area.cell.dY};
+
+/* Тут, конечно, есть куда расти, но для наших целей и такой реализации будет достаточно xD
       if (!from_0_0)
          {
-            Dx1 = 1;
-            Dy1 = 0;
-            Dx2 = 2;
+            Dx1 = area.cell.dX;
+            Dy1 = area.cell.dY;
+            Dx2 = 0;
             Dy2 = 0;
          }
          */
       
-      for (size_t x{}, y{}; x < area.cell.dX && y < area.cell.dY; ++x, ++y)
+//      for (size_t x{}, y{}; x < area.cell.dX && y < area.cell.dY; ++x, ++y)
+      for (size_t x{Dx1}, y{Dy1}; x < Dx2 && y < Dy2; ++x, ++y)
          {
                if(isValidCell(area,{{x},{y}}) && getCellData(area.table, {{x}, {y}}) == state) 
                   {
@@ -690,17 +720,21 @@ bool messUpPlans_pos_diag(const Area &area, const bool from_0_0,
       return false;
 
    }
-bool messUpPlans_neg_diag(const Area &area, const bool from_max_max, 
-   const STATE state, const bool force)
+bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force)
    {
 
 /*
+      size_t Dx1{area.cell.dX};
+      size_t Dy1{area.cell.dY};
+      size_t Dx2{0};
+      size_t Dy2{0}
+
       if (!from_0_0)
          {
-            Dx1 = 1;
+            Dx1 = 0;
             Dy1 = 0;
-            Dx2 = 2;
-            Dy2 = 0;
+            Dx2 = area.cell.dX;
+            Dy2 = area.cell.dY;
          }
          */
       
@@ -725,6 +759,78 @@ bool messUpPlans_neg_diag(const Area &area, const bool from_max_max,
                                      && getCellData(area.table,{{x-(size_t)2},{y-(size_t)2}}) == EMPTY_MARK)
                                  {
                                     setCellData(BOT_MARK,area.table, {{x-(size_t)2}, {y-(size_t)2}});
+                                    return true;
+                                 }
+                              }
+                        }
+                  }
+         }
+
+      return false;
+
+   }
+
+bool messUpPlans_pos_diag_anti(const Area &area, const STATE state, const bool force)
+   {
+
+         
+      for (int x{(int)area.cell.dX}, y{}; x >= 0 && y < (int)area.cell.dY; --x, ++y)
+         {
+               if(isValidCell(area,{{x+(size_t)0},{y+(size_t(0))}}) &&
+                   getCellData(area.table, {{x+(size_t)0}, {y+(size_t)0}}) == state) 
+                  {
+                     if (isValidCell(area,{{x-(size_t)1},{y+(size_t)1}}))
+                        {
+                           if ((state == BOT_MARK) && (force) &&
+                               (getCellData(area.table, {{x-(size_t)1},{y+(size_t)1}}) == EMPTY_MARK))
+                              {
+                                 setCellData(BOT_MARK, area.table,{{x-(size_t)1},{y+(size_t)1}});
+
+                                 return true;
+                              }
+                             
+                           if (getCellData(area.table, {{x-(size_t)1},{y+(size_t)1}}) == state)
+                              {
+                              if (isValidCell(area,{{x-(size_t)2},{y+(size_t)2}}) &&
+                                     getCellData(area.table,{{x-(size_t)2},{y+(size_t)2}}) == EMPTY_MARK)
+                                 {
+                                    setCellData(BOT_MARK,area.table, {{x-(size_t)2}, {y+(size_t)2}});
+                                    return true;
+                                 }
+                              }
+                        }
+                  }
+         }
+
+      return false;
+
+   }
+bool messUpPlans_neg_diag_anti(const Area &area, const STATE state, const bool force)
+   {
+
+
+      
+      for (int x{}, y{(int)area.cell.dY}; x < (int)area.cell.dX && y >= 0; ++x, --y)
+         {
+               if(isValidCell(area,{{x + (size_t) 0 },{y + (size_t)0 }}) 
+                  && getCellData(area.table, {{x + (size_t) 0 }, {y + (size_t) 0 }}) == state) 
+                  {
+                     if (isValidCell(area,{{x + (size_t) 1},{y - (size_t) 1}}))
+                        {
+                           if ((state == BOT_MARK) && (force) &&
+                               (getCellData(area.table, {{x+(size_t)1},{y-(size_t)1}}) == EMPTY_MARK))
+                              {
+                                 setCellData(BOT_MARK, area.table,{{x+(size_t)1},{y-(size_t)1}});
+
+                                 return true;
+                              }
+                             
+                           if (getCellData(area.table, {{x+(size_t)1},{y-(size_t)1}}) == state)
+                              {
+                              if (isValidCell(area,{{x+(size_t)2},{y-(size_t)2}})
+                                     && getCellData(area.table,{{x+(size_t)2},{y-(size_t)2}}) == EMPTY_MARK)
+                                 {
+                                    setCellData(BOT_MARK,area.table, {{x+(size_t)2}, {y-(size_t)2}});
                                     return true;
                                  }
                               }

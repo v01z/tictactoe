@@ -82,9 +82,12 @@ bool messUpPlans_pos(const Area &area, const bool horiz,
 bool messUpPlans_neg(const Area &area, const bool horiz,
     const STATE state, const bool force);
 
-bool messUpPlans_pos_diag(const Area &area, const bool from_0_0,
-    const STATE state, const bool force);
+bool messUpPlans_pos_diag(const Area &area, const STATE state, const bool force);
 
-bool messUpPlans_neg_diag(const Area &area, const bool from_max_max,
-    const STATE state, const bool force);
+bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force);
+
+bool messUpPlans_pos_diag_anti(const Area &area, const STATE state, const bool force);
+
+bool messUpPlans_neg_diag_anti(const Area &area, const STATE state, const bool force);
+
 #endif // HEADER_HPP
