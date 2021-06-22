@@ -76,8 +76,13 @@ void usage(char ** argv);//It is possible to make argv as 'const',
 size_t getRandom (const size_t maximum);
 
 
-bool messUpPlans_pos(const Area &area, const bool horiz);
+bool messUpPlans_pos(const Area &area, const bool horiz,
+    const STATE state, const bool force);
 
-bool messUpPlans_neg(const Area &area, const bool horiz);
+bool messUpPlans_neg(const Area &area, const bool horiz,
+    const STATE state, const bool force);
+
+bool messUpPlans_pos_diag(const Area &area, const bool is_horiz,
+    const STATE state, const bool force);
 
 #endif // HEADER_HPP
