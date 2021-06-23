@@ -4,7 +4,7 @@ CC=		g++
 
 DEBUG=	-g
 
-OPT=	-O0
+OPT=	-O0 
 
 WARN=	-Wall
 

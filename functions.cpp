@@ -203,19 +203,11 @@ bool humanTurn(Area &area) {
    return true;
 }
 
-bool botTurn(Area &area) {
+bool botTurn(Area &area, const CELL key_cells [], bool (*ptrFunc [])
+   (const Area &area, const bool direction, const STATE state, const bool force))
+   {
 
-   const CELL key_cells [] = {
-
-         {{area.cell.dX/2},{area.cell.dY/2}},
-         {{0},{0}},
-         {{0},{area.cell.dY - 1}},
-         {{area.cell.dX - 1},{0}},
-         {{area.cell.dX - 1},{area.cell.dY - 1}},
-
-   };
-
-   CELL free_key_cells[sizeof (key_cells)/sizeof(*key_cells)];
+   CELL free_key_cells[KEY_POS_SIZE];
    size_t fkc_iter {0};
 
    CELL cell;
@@ -224,14 +216,14 @@ bool botTurn(Area &area) {
 //set another one:
 //--------------------------------------------------
 
-if (highQualityAI(area, BOT_MARK, false))
+if (highQualityAI(ptrFunc, area, BOT_MARK, false))
    return false;
 
  // Lets check wether Human has alredy got 2 marks.
  // If so then the Bot has to mess up him:
  //--------------------- 
 
-if (highQualityAI(area, HUMAN_MARK,false))
+if (highQualityAI(ptrFunc, area, HUMAN_MARK,false))
    return false;
 
 //If everything is OK (there are no bot-lines with two marks and
@@ -239,17 +231,17 @@ if (highQualityAI(area, HUMAN_MARK,false))
 //mark to to any other one: force = true.
 //--------------------------------------------------
 
-if (highQualityAI(area, BOT_MARK, true))
+if (highQualityAI(ptrFunc, area, BOT_MARK, true))
    return false;
 
 //If Bot doesnt have any marks on a table game, it
 //will settle one in random mode on a key position.
 
-for (auto& x : key_cells)
+for (size_t i{}; i < KEY_POS_SIZE; ++i)
    {
-      if (getCellData(area.table,x) == EMPTY_MARK)
+      if (getCellData(area.table,key_cells[i]) == EMPTY_MARK)
          {
-            free_key_cells[fkc_iter] = x;
+            free_key_cells[fkc_iter] = key_cells[i];
             fkc_iter++;
          }
    }
@@ -333,12 +325,39 @@ void game_process(const size_t table_size, const size_t win_line_length) {
    std::string MACHINE_GRATS (KRED); 
    MACHINE_GRATS.append("Machine has won!");
 
-//   whose_move = (bool)getRandom(2); //бросаем жребий
+   bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
+      const STATE state, const bool force);
+
+   ////////////////////
+   ptrFunc[0] = &messUpPlans_pos;
+   ptrFunc[1] = &messUpPlans_neg;
+   ptrFunc[2] = &messUpPlans_pos_diag;
+   ptrFunc[3] = &messUpPlans_neg_diag;
+   ptrFunc[4] = &messUpPlans_pos_diag_anti;
+   ptrFunc[5] = &messUpPlans_neg_diag_anti;
+   /////////////
+   ptrFunc[6] = &messUpPlans_pos;
+   ptrFunc[7] = &messUpPlans_neg; 
+   ////////////////////
+
+   
 
    for (;;)
    {
 
        initGame(area, table_size, win_line_length);
+
+       const CELL key_cells [KEY_POS_SIZE] = {
+
+         {{area.cell.dX/2},{area.cell.dY/2}},
+         {{0},{0}},
+         {{0},{area.cell.dY - 1}},
+         {{area.cell.dX - 1},{0}},
+         {{area.cell.dX - 1},{area.cell.dY - 1}},
+
+   };
+
+
        refreshScreen(area);
 
        whose_move = (bool)getRandom(2); //бросаем жребий
@@ -355,7 +374,7 @@ void game_process(const size_t table_size, const size_t win_line_length) {
 
          else if (whose_move)
             {
-            whose_move = botTurn(area);
+            whose_move = botTurn(area, key_cells, ptrFunc);
             refreshScreen(area);
    
             if (isGameEndedUp(BOT_MARK, area, MACHINE_GRATS)) break;
@@ -580,17 +599,6 @@ bool messUpPlans_pos_diag(const Area &area, const bool from_0_0, const STATE sta
       size_t Dx2{area.cell.dX};
       size_t Dy2{area.cell.dY};
 
-/* Тут, конечно, есть куда расти, но для наших целей и такой реализации будет достаточно xD
-      if (!from_0_0)
-         {
-            Dx1 = area.cell.dX;
-            Dy1 = area.cell.dY;
-            Dx2 = 0;
-            Dy2 = 0;
-         }
-         */
-      
-//      for (size_t x{}, y{}; x < area.cell.dX && y < area.cell.dY; ++x, ++y)
       for (size_t x{Dx1}, y{Dy1}; x < Dx2 && y < Dy2; ++x, ++y)
          {
                if(isValidCell(area,{{x},{y}}) && getCellData(area.table, {{x}, {y}}) == state) 
@@ -622,20 +630,6 @@ bool messUpPlans_pos_diag(const Area &area, const bool from_0_0, const STATE sta
 bool messUpPlans_neg_diag(const Area &area, const bool from_max_max, const STATE state, const bool force)
    {
 
-/*
-      size_t Dx1{area.cell.dX};
-      size_t Dy1{area.cell.dY};
-      size_t Dx2{0};
-      size_t Dy2{0}
-
-      if (!from_max_max)
-         {
-            Dx1 = 0;
-            Dy1 = 0;
-            Dx2 = area.cell.dX;
-            Dy2 = area.cell.dY;
-         }
-         */
       
       for (int x{(int)area.cell.dX}, y{(int)area.cell.dY}; x >= 0 && y >= 0; --x, --y)
          {
@@ -741,30 +735,18 @@ bool messUpPlans_neg_diag_anti(const Area &area, const bool direction, const STA
 
    }
 
-bool highQualityAI (const Area &area, const STATE who, const bool force)
+bool highQualityAI (bool (*ptrFunc[])(const Area &area, const bool direction,
+    const STATE state, const bool force), 
+    const Area &area, const STATE who, const bool force)
    {
 
-   bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
-      const STATE state, const bool force);
-
-   ////////////////////
-   ptrFunc[0] = &messUpPlans_pos;
-   ptrFunc[1] = &messUpPlans_neg;
-   ptrFunc[2] = &messUpPlans_pos_diag;
-   ptrFunc[3] = &messUpPlans_neg_diag;
-   ptrFunc[4] = &messUpPlans_pos_diag_anti;
-   ptrFunc[5] = &messUpPlans_neg_diag_anti;
-   /////////////
-   ptrFunc[6] = &messUpPlans_pos;
-   ptrFunc[7] = &messUpPlans_neg; 
-   ////////////////////
-
+   
    for (size_t i{}; i < PTR_FUNC_SIZE - 2; ++i)
-         if (ptrFunc[i] (area, true, who, force))
+         if ((ptrFunc [i]) (area, true, who, force))
             return true;
 
    for (size_t i{PTR_FUNC_SIZE - 2}; i < PTR_FUNC_SIZE; ++i)
-         if (ptrFunc[i] (area, false, who, force))
+         if ((ptrFunc[i]) (area, false, who, force))
             return true;
       
    return false;

@@ -28,6 +28,8 @@ typedef struct {
 
 const std::string its_pitty { "Cant clear screen. But it is necessary for our game, sorry." };
 
+const size_t KEY_POS_SIZE { 5 };
+
 const size_t PTR_FUNC_SIZE { 8 };
 
 inline char getCellData (STATE ** const array, const CELL cell);
@@ -51,7 +53,8 @@ void refreshScreen(Area &area);
 bool humanTurn(Area &area);
 
 
-bool botTurn(Area &area);
+bool botTurn(Area &area, const CELL pos [], bool  (*ptrFunc [PTR_FUNC_SIZE])
+ (const Area &area, const bool direction, const STATE state, const bool force));
 
 
 bool isVictory(const STATE ch, Area &area);
@@ -96,9 +99,7 @@ bool messUpPlans_pos_diag_anti(const Area &area,
 bool messUpPlans_neg_diag_anti(const Area &area, 
  const bool direction, const STATE state, const bool force);
 
-bool highQualityAI (const Area &area, const STATE who, const bool force);
-
-//bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
- //   const STATE state, const bool force);
+bool highQualityAI (bool (*ptrFunc[]) (const Area &area, const bool direction,
+ const STATE state, const bool force), const Area &area, const STATE who, const bool force);
 
 #endif // HEADER_HPP
