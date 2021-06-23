@@ -215,142 +215,66 @@ bool botTurn(Area &area) {
 
    };
 
+bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
+    const STATE state, const bool force);
+
+////////////////////
+ptrFunc[0] = &messUpPlans_pos;
+ptrFunc[1] = &messUpPlans_neg;
+ptrFunc[2] = &messUpPlans_pos_diag;
+ptrFunc[3] = &messUpPlans_neg_diag;
+ptrFunc[4] = &messUpPlans_pos_diag_anti;
+ptrFunc[5] = &messUpPlans_neg_diag_anti;
+/////////////
+ptrFunc[6] = &messUpPlans_pos;
+ptrFunc[7] = &messUpPlans_neg; 
+///////////////////
+
    CELL free_key_cells[sizeof (key_cells)/sizeof(*key_cells)];
    size_t fkc_iter {0};
 
    CELL cell;
 
-   /////////// The very high artificial intelligence xD ///////////////
-   ////Begin
-
 //In case two marks have been settled by Bot, it will 
 //set another one:
 //--------------------------------------------------
-   if (messUpPlans_pos(area,true, BOT_MARK, false))
-      {
-         return false;
-      }
 
-   if (messUpPlans_pos(area,false, BOT_MARK, false))
-      {
+for (size_t i{}; i < PTR_FUNC_SIZE - 2; ++i)
+      if (ptrFunc[i] (area,true,BOT_MARK,false))
          return false;
-      }
-      
-    if (messUpPlans_neg(area,true, BOT_MARK, false))
-      {
-         return false;
-      }
 
-   if (messUpPlans_neg(area,false, BOT_MARK, false))
-      {
+for (size_t i{PTR_FUNC_SIZE - 2}; i < PTR_FUNC_SIZE; ++i)
+      if (ptrFunc[i] (area,false,BOT_MARK,false))
          return false;
-      }
-   if (messUpPlans_pos_diag(area, BOT_MARK, false))
-      {
-         return false;
-      }
 
-   if (messUpPlans_neg_diag(area, BOT_MARK, false))
-      {
-         return false;
-      }
-   
-   if (messUpPlans_pos_diag_anti(area, BOT_MARK, false))
-      {
-         return false;
-      }
-
-   if (messUpPlans_neg_diag_anti(area, BOT_MARK, false))
-      {
-         return false;
-      }
 
  // Lets check wether Human has alredy got 2 marks.
  // If so then the Bot has to mess up him:
  //--------------------- 
-   if (messUpPlans_pos(area,true, HUMAN_MARK, false))
-      {
-         return false;
-      }
 
-   if (messUpPlans_pos(area,false, HUMAN_MARK, false))
-      {
+for (size_t i{}; i < PTR_FUNC_SIZE - 2; ++i)
+      if (ptrFunc[i] (area,true,HUMAN_MARK,false))
          return false;
-      }
-      
-      
-    if (messUpPlans_neg(area,true, HUMAN_MARK, false))
-      {
-         return false;
-      }
 
-   if (messUpPlans_neg(area,false, HUMAN_MARK, false))
-      {
+for (size_t i{PTR_FUNC_SIZE - 2}; i < PTR_FUNC_SIZE; ++i)
+      if (ptrFunc[i] (area,false,HUMAN_MARK,false))
          return false;
-      }
-
-   if (messUpPlans_pos_diag(area, HUMAN_MARK, false))
-      {
-         return false;
-      }
-
-   if (messUpPlans_neg_diag(area, HUMAN_MARK, false))
-      {
-         return false;
-      }
-   
-    if (messUpPlans_pos_diag_anti(area, HUMAN_MARK, false))
-      {
-         return false;
-      }
-
-   if (messUpPlans_neg_diag_anti(area, HUMAN_MARK, false))
-      {
-         return false;
-      }
 
    //If everything is OK (there are no bot-lines with two marks and
    //Human has not lines with two makrs too) the Bot will append one 
    //mark to to any other one: force = true.
    //--------------------------------------------------
-    if (messUpPlans_pos(area,true, BOT_MARK, true))
-      {
-         return false;
-      }
-   if (messUpPlans_pos(area,false, BOT_MARK, true))
-      {
-         return false;
-      }
-    if (messUpPlans_neg(area,true, BOT_MARK, true))
-      {
-         return false;
-      }
-   if (messUpPlans_neg(area,false, BOT_MARK, true))
-      {
-         return false;
-      }
 
-   if (messUpPlans_pos_diag(area, BOT_MARK, true))
-      {
+for (size_t i{}; i < PTR_FUNC_SIZE - 2; ++i)
+      if (ptrFunc[i] (area,true,BOT_MARK,true))
          return false;
-      }
 
-   if (messUpPlans_neg_diag(area, BOT_MARK, true))
-      {
+for (size_t i{PTR_FUNC_SIZE - 2}; i < PTR_FUNC_SIZE; ++i)
+      if (ptrFunc[i] (area,false,BOT_MARK,true))
          return false;
-      }
-   if (messUpPlans_pos_diag(area, BOT_MARK, true))
-      {
-         return false;
-      }
 
-   if (messUpPlans_neg_diag(area, BOT_MARK, true))
-      {
-         return false;
-      }
-
-   //////////////////////////////////////////////////
-   ////////////End
+   //If Bot doesnt have any marks on a table game, it
+   //will settle one in random mode on a key position.
 
    for (auto& x : key_cells)
       {
@@ -367,6 +291,10 @@ bool botTurn(Area &area) {
          return false;
       }
 
+//If all key positions are occupied, Bot will settle mark
+//in a random mode anywhere on a game table.
+//На самом деле эта ситуация will never happen. Но я оставил
+//этот код "на всякий случай" (на будущее развитие программы)
    do {
 
      cell.dX = getRandom(area.cell.dX);
@@ -675,7 +603,7 @@ bool messUpPlans_neg(const Area &area, bool const is_vert,
 
    }
 
-bool messUpPlans_pos_diag(const Area &area, const STATE state, const bool force)
+bool messUpPlans_pos_diag(const Area &area, const bool from_0_0, const STATE state, const bool force)
    {
 
       size_t Dx1{0};
@@ -722,7 +650,7 @@ bool messUpPlans_pos_diag(const Area &area, const STATE state, const bool force)
       return false;
 
    }
-bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force)
+bool messUpPlans_neg_diag(const Area &area, const bool from_max_max, const STATE state, const bool force)
    {
 
 /*
@@ -731,7 +659,7 @@ bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force)
       size_t Dx2{0};
       size_t Dy2{0}
 
-      if (!from_0_0)
+      if (!from_max_max)
          {
             Dx1 = 0;
             Dy1 = 0;
@@ -772,7 +700,7 @@ bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force)
 
    }
 
-bool messUpPlans_pos_diag_anti(const Area &area, const STATE state, const bool force)
+bool messUpPlans_pos_diag_anti(const Area &area, const bool direction, const STATE state, const bool force)
    {
 
          
@@ -807,7 +735,7 @@ bool messUpPlans_pos_diag_anti(const Area &area, const STATE state, const bool f
       return false;
 
    }
-bool messUpPlans_neg_diag_anti(const Area &area, const STATE state, const bool force)
+bool messUpPlans_neg_diag_anti(const Area &area, const bool direction, const STATE state, const bool force)
    {
 
 
@@ -841,5 +769,10 @@ bool messUpPlans_neg_diag_anti(const Area &area, const STATE state, const bool f
          }
 
       return false;
+
+   }
+
+bool highQualityAI (bool dir, STATE who, bool force)
+   {
 
    }

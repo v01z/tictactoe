@@ -26,7 +26,9 @@ typedef struct {
 #pragma pack (pop)
 
 
-const std::string its_pitty {"Cant clear screen. But it is necessary for our game, sorry."};
+const std::string its_pitty { "Cant clear screen. But it is necessary for our game, sorry." };
+
+const size_t PTR_FUNC_SIZE { 8 };
 
 inline char getCellData (STATE ** const array, const CELL cell);
 
@@ -82,12 +84,19 @@ bool messUpPlans_pos(const Area &area, const bool horiz,
 bool messUpPlans_neg(const Area &area, const bool horiz,
     const STATE state, const bool force);
 
-bool messUpPlans_pos_diag(const Area &area, const STATE state, const bool force);
+bool messUpPlans_pos_diag(const Area &area,
+ const bool direction, const STATE state, const bool force);
 
-bool messUpPlans_neg_diag(const Area &area, const STATE state, const bool force);
+bool messUpPlans_neg_diag(const Area &area, 
+ const bool direction, const STATE state, const bool force);
 
-bool messUpPlans_pos_diag_anti(const Area &area, const STATE state, const bool force);
+bool messUpPlans_pos_diag_anti(const Area &area, 
+ const bool direction, const STATE state, const bool force);
 
-bool messUpPlans_neg_diag_anti(const Area &area, const STATE state, const bool force);
+bool messUpPlans_neg_diag_anti(const Area &area, 
+ const bool direction, const STATE state, const bool force);
+
+//bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
+ //   const STATE state, const bool force);
 
 #endif // HEADER_HPP
