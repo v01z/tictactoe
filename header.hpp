@@ -96,6 +96,8 @@ bool messUpPlans_pos_diag_anti(const Area &area,
 bool messUpPlans_neg_diag_anti(const Area &area, 
  const bool direction, const STATE state, const bool force);
 
+bool highQualityAI (const Area &area, const STATE who, const bool force);
+
 //bool  (*ptrFunc [PTR_FUNC_SIZE]) (const Area &area, const bool direction,
  //   const STATE state, const bool force);
 
